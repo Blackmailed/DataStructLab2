@@ -19,8 +19,8 @@ void PushBack(List* list, int data)
 	{
 		list->Tail->Next = element;
 		element->Previous = list->Tail;
-		element->Next = nullptr;
 		list->Tail = element;
+		element->Next = nullptr;
 	}
 
 	list->Length++;
@@ -172,7 +172,6 @@ int InsertBeforeIndex(List* list, int index, int value)
 	return 0;
 }
 
-
 void GetFillRandomList(List* list, int count)
 {
 	srand(time(nullptr));
@@ -194,27 +193,85 @@ int LinearSearch(List* list, int element)
 			return index;
 		}
 	}
-
 	return -1;
 }
 
-//void BubbleSort(List* list)
-//{
-//	int length = list->Length;
-//	while (length--)
-//	{
-//		bool swapped = false;
-//		for (int i = 0; i < length; i++)
-//		{
-//			if (dynamicArray->Array[i] > dynamicArray->Array[i + 1])
-//			{
-//				swap(dynamicArray->Array[i], dynamicArray->Array[i + 1]);
-//				swapped = true;
-//			}
-//		}
-//		if (swapped == false)
-//		{
-//			break;
-//		}
-//	}
-//}
+void SwapElements(List* list, Element* first, Element* second)
+{
+	if (first == list->Head)
+	{
+		list->Head = second;
+	}
+	else
+	{
+		first->Previous->Next = second;
+	}
+
+	if (second == list->Tail)
+	{
+		list->Tail = first;
+	}
+	else
+	{
+		second->Next->Previous = first;
+	}
+
+	first->Next = second->Next;
+	second->Previous = first->Previous;
+	first->Previous = second;
+	second->Next = first;
+}
+
+void SortList(List* list)
+{
+	Element* first = list->Head;
+
+	for (int i = 0; i < list->Length; i++)
+	{
+		for (int j = 0; j < list->Length - 1; j++)
+		{
+			if (first == nullptr)
+			{
+				break;
+			}
+			if (first->Next == nullptr)
+			{
+				break;
+			}
+
+			Element* second = first->Next;
+
+			if (first->Data > second->Data)
+			{
+				SwapElements(list, first, second);
+			}
+
+			first = first->Next;
+		}
+
+		first = list->Head;
+	}
+}
+
+void RemoveList(List* list)
+{
+	if (list->Head == nullptr)
+	{
+		return;
+	}
+
+	int index = 0;
+	Element* temp = list->Head->Next;
+
+	while (temp != nullptr)
+	{
+		delete temp->Previous;
+		list->Length--;
+		temp = temp->Next;
+	}
+
+	delete temp;
+	list->Length--;
+	list->Head = nullptr;
+	list->Tail = nullptr;
+}
